@@ -1,0 +1,26 @@
+{
+  "city": "Città Fittizia",
+  "country": "Paese Immaginario",
+  "weather_data": {
+    "temperature": {
+      "value": 22.5,
+      "unit": "°C"
+    },
+    "humidity": {
+      "value": 60,
+      "unit": "%"
+    },
+    "wind_speed": {
+      "value": 12,
+      "unit": "km/h"
+    },
+    "precipitation": {
+      "value": 2.5,
+      "unit": "mm"
+    },
+    "condition": "Parzialmente nuvoloso",
+    "sunrise": "06:30 AM",
+    "sunset": "07:00 PM"
+  },
+  "last_updated": "2023-10-30T15:30:00Z"
+}

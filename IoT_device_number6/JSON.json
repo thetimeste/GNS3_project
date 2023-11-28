@@ -1,0 +1,37 @@
+{
+  "city": "Nome della Città",
+  "country": "Nome del Paese",
+  "pollution_data": {
+    "pm2.5": {
+      "value": 10.2,
+      "unit": "µg/m³",
+      "source": "Fonte dei dati PM2.5"
+    },
+    "pm10": {
+      "value": 20.5,
+      "unit": "µg/m³",
+      "source": "Fonte dei dati PM10"
+    },
+    "co2": {
+      "value": 400,
+      "unit": "ppm",
+      "source": "Fonte dei dati CO2"
+    },
+    "no2": {
+      "value": 25.3,
+      "unit": "µg/m³",
+      "source": "Fonte dei dati NO2"
+    },
+    "o3": {
+      "value": 35.7,
+      "unit": "µg/m³",
+      "source": "Fonte dei dati O3"
+    },
+    "so2": {
+      "value": 12.1,
+      "unit": "µg/m³",
+      "source": "Fonte dei dati SO2"
+    }
+  },
+  "last_updated": "2023-10-30T15:30:00Z"
+}

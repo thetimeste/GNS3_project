@@ -1,0 +1,18 @@
+{
+  "city": "Città Fittizia",
+  "country": "Paese Immaginario",
+  "population": 500000,
+  "location": {
+    "latitude": 40.7128,
+    "longitude": -74.0060
+  },
+  "area": 1000,
+  "official_language": "Lingua Immaginaria",
+  "currency": "Moneta Fittizia",
+  "timezone": "Fuso Orario UTC+2",
+  "major_landmarks": [
+    "Monumento Immaginario",
+    "Museo Fittizio",
+    "Parco delle Meraviglie"
+  ]
+}
