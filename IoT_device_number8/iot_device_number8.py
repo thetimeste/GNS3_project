@@ -35,19 +35,22 @@ class IoTDeviceNumber8:
 
     def send_data(self,data):
         #invio dati allo switch tramite mqtt
-        self.client.connect("127.0.0.1", 5021)
-        print("connessione accettata ")
-        self.client.publish("data", data)
+        message = f"MQTT_MESSAGE\n{data}"
+        self.client.connect("127.0.0.1", 5020)
+        print(f"connesso al router ")
+        self.client.publish( "data", message)
+        print(f"dati pubblicati")
         #client.disconnect()
 
     def check_mqtt_status(self):
         #controlla lo stato del server mqtt
-        client = mqtt.Client()
+
         try:
-            client.connect("127.0.0.1", 5021)
+            self.client.connect("127.0.0.1", 5020)
             return True
         except Exception as e:
             return False
+
 
 
 

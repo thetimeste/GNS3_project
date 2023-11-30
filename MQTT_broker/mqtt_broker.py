@@ -24,7 +24,7 @@ class MyMQTTPublisher:
             print("Unexpected disconnection.")
 
     def connect(self):
-        self.client.connect(host=self.broker_address, port=5021, keepalive=30)
+        self.client.connect(host=self.broker_address, port=5020, keepalive=30)
 
     def start_publishing(self):
         self.client.loop_start()
@@ -41,13 +41,8 @@ class MyMQTTPublisher:
         self.client.loop_stop()
 
 if __name__ == "__main__":
-    config = {
-        "MQTT_BROKER_ADDR": "127.0.0.1",
-        "MQTT_TOPIC_PUB": "test/topic",
-        "SLEEP_TIME": 1,
-        "SLEEP_TIME_SD": 0.1
-    }
-    config["HOSTNAME"] = socket.gethostname()
+    config = {"MQTT_BROKER_ADDR": "127.0.0.1:5030", "MQTT_TOPIC_PUB": "test/topic", "SLEEP_TIME": 1,
+              "SLEEP_TIME_SD": 0.1, "HOSTNAME": socket.gethostname()}
 
     for c in ("SLEEP_TIME", "SLEEP_TIME_SD"):
         config[c] = float(config[c])

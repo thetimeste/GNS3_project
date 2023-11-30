@@ -2,7 +2,7 @@
 import socket
 import threading
 import time
-
+#import paho.mqtt.client as mqtt
 from flask import Flask, request, jsonify
 import logging
 import signal
@@ -17,7 +17,12 @@ def index():
 
 @app.route("/post", methods=["POST"])
 def post():
-    return jsonify(request.get_json())
+    try:
+        data = request.get_json()
+        return jsonify(data)
+    except Exception as e:
+        return jsonify({"error": str(e)})
+
 
 def handle_connection(client_socket):
     # Ricevo i dati dal client
@@ -48,13 +53,52 @@ def handle_connection(client_socket):
     # Chiudo la connessione
     client_socket.close()
 
+
+def handle_connection_mqtt(client_socket):
+    try:
+        # Ricevi i dati dal client
+        data = client_socket.recv(1024)
+
+        # Stampa i dati ricevuti per debug
+        print("Dati ricevuti:", data)
+
+        # Esempio di messaggio MQTT inviato dal dispositivo IoT6
+        if data.startswith(b"MQTT_MESSAGE\n"):
+            # Estrai il payload MQTT
+            message_payload = data.split(b"\n", 1)[1]
+
+            # Pubblica il messaggio sul topic desiderato
+            # mqtt_client.publish("data", message_payload)
+
+            # Puoi aggiungere ulteriori logica qui in base ai tuoi requisiti
+
+            # Invia una risposta al dispositivo IoT6
+            response = b"Messaggio MQTT ricevuto e pubblicato sul topic 'data'"
+
+            # Invia la risposta al client
+            client_socket.sendall(response)
+
+        else:
+            # Se il payload non è un messaggio MQTT valido, gestisci diversamente o invia una risposta di errore
+            response = b"Comando non valido"
+
+            # Invia la risposta al client
+            client_socket.sendall(response)
+
+    except Exception as e:
+        print("Errore durante l'elaborazione della richiesta:", str(e))
+
+    finally:
+        # Chiudi la connessione
+        client_socket.close()
+
 def handle_client(sock):
     while True:
         # Accetto una connessione
         client_socket, _ = sock.accept()
 
         # Gestione della connessione in un thread separato
-        threading.Thread(target=handle_connection, args=(client_socket,), daemon=True).start()
+        threading.Thread(target=handle_connection_mqtt, args=(client_socket,), daemon=True).start()
 
 def main():
     # Creo un socket TCP
