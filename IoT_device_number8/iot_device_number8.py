@@ -1,12 +1,49 @@
-#!/usr/bin/env python3
-import os
 import time
-import paho.mqtt.client as mqtt
-#from mySDNswitch2.MySwitch import MySwitch
+import json
+import os
+import requests
 
+# MQTT broker details (replace with your router's MQTT broker info)
+router_ip = "192.168.0.1"
+router_port = 5021
+router_address = f"http://{router_ip}:{router_port}/post"
+
+# Constructing a path using os.path.join()
+path = "/app/JSON2.json"
+
+
+def send_http_data():
+    
+    print("PATH: ",path)
+    with open(path, 'r') as f:
+        json_data = json.load(f)
+
+    json_string = json.dumps(json_data)
+    print(json_string)
+    
+    response = requests.post(router_address, json=json_data)
+   
+    response = requests.post(router_address, "json=json_data")
+    # Check the response status
+    if response.status_code == 200:
+        print("Request successful")
+        
+    else:
+        print(f"Request failed with status code: {response.status_code}")
+
+
+def main():
+    while True:
+        send_http_data()
+        time.sleep(10)
+
+if __name__== '__main__':
+    main()
+
+"""
 #il dispositivo utilizza il protocollo di cominicazione mqtt
 
-class IoTDeviceNumber8:
+class IoTDeviceNumber6:
 
     #def __init__(self,ip,mac,switch):
         #self.ip=ip
@@ -35,35 +72,46 @@ class IoTDeviceNumber8:
 
     def send_data(self,data):
         #invio dati allo switch tramite mqtt
-        self.client.connect("127.0.0.1", 5021)
-        print("connessione accettata ")
+        print("sending data")
+        self.client.connect(host="192.168.0.2", port=5021)
+        print("connesso al router ")
         self.client.publish("data", data)
-        #client.disconnect()
-
     def check_mqtt_status(self):
         #controlla lo stato del server mqtt
         client = mqtt.Client()
         try:
-            client.connect("127.0.0.1", 5021)
+            client.connect("192.168.0.2", 5021)
             return True
         except Exception as e:
+            print(e)
             return False
-
 
 
 
 
 def main():
     #creazione switch sdn
-    #switch = MySwitch("mySDNSwitch","127.0.0.1",90)
+    #sdn_controller=SDNController('localhost',90)
+    #switch = MySwitch("mySDNSwitch",'Bridge', sdn_controller.sdn_address,sdn_controller.sdn_port)
     #switch.connect()
+    print("main started")
+    device = IoTDeviceNumber6('192.168.0.3', 'aa:bb:cc:dd:ee:ff')
+    path = os.path.join('/JSON.json')
+    print("path: ",path)
+    with open(path) as f:
+        data = f.read()
+    print("got data")
+    device.send_data(data)
+
+    while True:
+        time.sleep(10)
+        device.send_data()
 
     #creazione dispositivo iot
     #device= IoTDeviceNumber3('192.168.3.1', 'aa:bb:cc:dd:ee:ff', switch)
-    device = IoTDeviceNumber8('0.0.0.0', 'aa:bb:cc:dd:ee:ff')
-
+    
     #Indico il path
-    path = os.path.join('JSON2.json')
+    path = os.path.join('/app/JSON.json')
 
     #apertura e lettura file json
     with open(path) as f:
@@ -85,3 +133,6 @@ def main():
 
 if __name__== '__main__':
     main()
+
+"""
+

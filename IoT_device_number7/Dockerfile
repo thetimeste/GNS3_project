@@ -22,6 +22,7 @@ COPY JSON1.json /app/JSON1.json
 
 # Installa le dipendenze del progetto
 RUN pip install paho-mqtt
+RUN pip install requests
 
 RUN chmod +x /app/iot_device_number7.py
 

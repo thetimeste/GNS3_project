@@ -1,10 +1,10 @@
 from gns3fy import Gns3Connector, Project, Node, Link
 
 # Indirizzo del server GNS3
-gns3_server = "http://192.168.56.130:80"
+gns3_server = "http://0.0.0.0:3080"
 
 # Nome del progetto
-project_name = "myProject_matteo_mt"
+project_name = "snd_project"
 
 
 # Creazione della connessione al server GNS3

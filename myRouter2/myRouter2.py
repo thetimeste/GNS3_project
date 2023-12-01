@@ -2,51 +2,34 @@
 import socket
 import threading
 import time
-
 from flask import Flask, request, jsonify
 import logging
 import signal
 
-logging.basicConfig(level=logging.INFO)
-
 app = Flask(__name__)
 
-@app.route("/")
-def index():
-    return "<h1>Questo è un router</h1></h1>"
-
 @app.route("/post", methods=["POST"])
+
+#define post method
 def post():
-    return jsonify(request.get_json())
+    sender_ip = request.remote_addr
+    print("Received a payload from", sender_ip)
+
+    # Check if the received data is in JSON format
+    try:
+        json_data = request.get_json()
+        print("Received JSON data:", json_data)
+        return("JSON RECEIVED")
+    except Exception as e:
+        print("Received data is not JSON:", e)
+        return("NON-JSON RECEIVED")
+    
 
 def handle_connection(client_socket):
-    # Ricevo i dati dal client
+    # Receive data from the MQTT client
     data = client_socket.recv(1024)
-
-    # Elaboro i dati ricevuti
-    request_line, request_headers, request_body = data.decode("utf-8").split("\r\n")
-
-    # Creo la risposta
-    if request_line.startswith("GET /"):
-        response_line = "HTTP/1.1 200 OK"
-        response_headers = "Content-Type: text/html\r\n\r\n"
-        response_body = "<html><body><h1>Questo è un router</h1></h1><body><html>"
-    elif request_line.startswith("POST /"):
-        response_line = "HTTP/1.1 200 OK"
-        response_headers = "Content-Type: text/plain\r\n\r\n"
-        response_body = request_body
-    else:
-        response_line = "HTTP/1.1 400 Bad request"
-        response_headers = "Content-Type: text/plain\r\n\r\n"
-        response_body = "La richiesta non è valida "
-
-    # Invio la risposta al client
-    client_socket.send(response_line.encode("utf-8"))
-    client_socket.send(response_headers.encode("utf-8"))
-    client_socket.send(response_body.encode("utf-8"))
-
-    # Chiudo la connessione
     client_socket.close()
+
 
 def handle_client(sock):
     while True:
@@ -57,9 +40,16 @@ def handle_client(sock):
         threading.Thread(target=handle_connection, args=(client_socket,), daemon=True).start()
 
 def main():
+    print("Router started")
     # Creo un socket TCP
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.bind(('localhost', 5020))
+    print("Socket created: ",sock)
+
+    try:
+        bind=sock.bind(('0.0.0.0', 5020))
+        print("Socket binded on all interfaces (0.0.0.0)")
+    except socket.error as e:
+        print("Binding failed:", e)
     sock.listen(5)  # Aumentato il numero massimo di connessioni pendenti
 
     # Utilizzo un flag per controllare se il router deve continuare ad accettare connessioni
@@ -78,7 +68,7 @@ def main():
     threading.Thread(target=handle_client, args=(sock,), daemon=True).start()
 
     # Avvio il server Flask in un thread separato
-    threading.Thread(target=app.run, args=('localhost', 5021), daemon=True).start()
+    threading.Thread(target=app.run, args=('0.0.0.0', 5021), daemon=True).start()
 
     # Attendo che il flag di running diventi False (ad esempio, quando ricevo un segnale di interruzione)
     while running:
@@ -86,3 +76,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    

@@ -16,7 +16,7 @@ sdnswitch: mySDNswitch2/Dockerfile
 	$(BUILD_CMD) --file $< --tag my-sdnswitch2-mt mySDNswitch2
 	@touch buildstatus
 
-iot-device_n6:IoT_device_number6/Dockerfile
+iot_device_n6:IoT_device_number6/Dockerfile
 	$(BUILD_CMD) --file $< --tag iot-device-n6-mt IoT_device_number6
 	@touch buildstatus
 
