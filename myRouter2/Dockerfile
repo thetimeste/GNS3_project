@@ -22,7 +22,7 @@ WORKDIR /app
 COPY myRouter2.py /app/myRouter2.py
 
 #espongo la porta di ascolto
-EXPOSE 5021
+EXPOSE 5020
 
 
 # Imposta i permessi di esecuzione per gli script Python

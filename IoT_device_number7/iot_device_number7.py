@@ -32,12 +32,13 @@ class IoTDeviceNumber7:
     def disconnect(self):
         #chiudo la connesione
         self.client.disconnect()
+    def connect(self):
+        self.client.connect("127.0.0.1", 5020)
+        print(f"connesso al router ")
 
     def send_data(self,data):
         #invio dati allo switch tramite mqtt
         message = f"MQTT_MESSAGE\n{data}"
-        self.client.connect("127.0.0.1", 5020)
-        print(f"connesso al router ")
         self.client.publish( "data", message)
         print(f"dati pubblicati")
         #client.disconnect()
@@ -51,9 +52,19 @@ class IoTDeviceNumber7:
         except Exception as e:
             return False
 
+    def subscribe_to_topic(self, topic):
+        # Funzione per iscriversi a un topic MQTT
+        subscribe_message = f"MQTT_SUBSCRIBE\n{topic}"
+        self.client.subscribe(subscribe_message)
+        print(f"Iscritto al topic: {subscribe_message}")
 
 
+    def on_message(client, message):
+        # Funzione di gestione dei messaggi MQTT ricevuti
+        payload_bytes = message.payload  # Il payload è già in formato bytes
+        payload_str = payload_bytes.decode("utf-8")  # Decodifica da binario a stringa
 
+        print(f"Ricevuto messaggio sul topic {message.topic}: {payload_str}")
 
 
 def main():
@@ -64,7 +75,8 @@ def main():
     #creazione dispositivo iot
     #device= IoTDeviceNumber3('192.168.3.1', 'aa:bb:cc:dd:ee:ff', switch)
     device = IoTDeviceNumber7('192.168.3.1', 'aa:bb:cc:dd:ee:ff')
-
+    device.connect()
+    device.subscribe_to_topic('citta fittizia')
     #Indico il path
     path = os.path.join('JSON1.json')
 
@@ -72,13 +84,13 @@ def main():
     with open(path) as f:
         data = f.read()
 
-    #invio dati
-    device.send_data(data)
 
     #ciclo di controllo sullo stato del server mqtt
     while True:
         if device.check_mqtt_status():
             #se il server mqtt è attivo, continua a funzionare
+            #invio dati
+            device.send_data(data)
             time.sleep(10)
             continue
         else:

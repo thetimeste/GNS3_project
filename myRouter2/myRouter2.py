@@ -56,34 +56,39 @@ def handle_connection(client_socket):
 
 def handle_connection_mqtt(client_socket):
     try:
-        # Ricevi i dati dal client
+        # Ricevo i dati dal client
         data = client_socket.recv(1024)
 
         # Stampa i dati ricevuti per debug
         print("Dati ricevuti:", data)
 
-        # Esempio di messaggio MQTT inviato dal dispositivo IoT6
-        if data.startswith(b"MQTT_MESSAGE\n"):
+        if data.startswith(b"MQTT_SUBSCRIBE\n"):
+            # Estrai il nome del topic dall'iscrizione
+            topic_name = data.split(b"\n", 1)[1]
+
+            #mqtt_client.subscribe(topic_name.decode("utf-8"))
+            print(f"Iscritto al topic '{topic_name.decode('utf-8')}'")
+
+            # Invia una risposta al dispositivo
+            response = f"MQTT_SUBSCRIBE_RESPONSE\nIscritto al topic '{topic_name.decode('utf-8')}'".encode("utf-8")
+
+        elif data.startswith(b"MQTT_MESSAGE\n"):
             # Estrai il payload MQTT
             message_payload = data.split(b"\n", 1)[1]
 
             # Pubblica il messaggio sul topic desiderato
-            # mqtt_client.publish("data", message_payload)
+            #mqtt_client.publish("data", message_payload)
 
-            # Puoi aggiungere ulteriori logica qui in base ai tuoi requisiti
-
-            # Invia una risposta al dispositivo IoT6
-            response = b"Messaggio MQTT ricevuto e pubblicato sul topic 'data'"
-
-            # Invia la risposta al client
-            client_socket.sendall(response)
+            # Invia una risposta al dispositivo
+            print(f"messaggio pubblicato sul topic 'data'")
+            response = b"MQTT_MESSAGE_RESPONSE\nMessaggio MQTT ricevuto e pubblicato sul topic 'data'"
 
         else:
-            # Se il payload non è un messaggio MQTT valido, gestisci diversamente o invia una risposta di errore
+            # Se il payload non è un messaggio MQTT valido
             response = b"Comando non valido"
 
-            # Invia la risposta al client
-            client_socket.sendall(response)
+        # Invia la risposta al client
+        client_socket.sendall(response)
 
     except Exception as e:
         print("Errore durante l'elaborazione della richiesta:", str(e))
@@ -91,6 +96,8 @@ def handle_connection_mqtt(client_socket):
     finally:
         # Chiudi la connessione
         client_socket.close()
+
+
 
 def handle_client(sock):
     while True:
