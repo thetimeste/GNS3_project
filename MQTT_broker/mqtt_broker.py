@@ -12,7 +12,6 @@ class MyMQTTPublisher:
         self.topic = topic
         self.sleep_time = sleep_time
         self.sleep_time_sd = sleep_time_sd
-
         self.client.on_connect = self.on_connect
         self.client.on_disconnect = self.on_disconnect
 

@@ -166,6 +166,11 @@ def create_docker_template(server: Server, name: str, image: str, environment: s
     defaults["image"] = image
     defaults["environment"] = environment
 
+
+
+
+
+
     req = requests.post(f"http://{server.addr}:{server.port}/v2/templates", data=json.dumps(defaults), auth=(server.user, server.password))
     req.raise_for_status()
     return req.json()
@@ -192,11 +197,13 @@ def create_docker_template_switch(server: Server, name: str, image: str, environ
                 'start_command': '',
                 'symbol': ':/symbols/multilayer_switch.svg',
                 'template_type': 'docker',
-                'usage': ''}
+                'usage': ''
+                }
 
     defaults["name"] = name
     defaults["image"] = image
     defaults["environment"] = environment
+
 
     req = requests.post(f"http://{server.addr}:{server.port}/v2/templates", data=json.dumps(defaults), auth=(server.user, server.password))
     req.raise_for_status()
@@ -224,11 +231,13 @@ def create_docker_template_router(server: Server, name: str, image: str, environ
                 'start_command': '',
                 'symbol': ':/symbols/router.svg',
                 'template_type': 'docker',
-                'usage': ''}
+                'usage': ''
+                }
 
     defaults["name"] = name
     defaults["image"] = image
     defaults["environment"] = environment
+
 
     req = requests.post(f"http://{server.addr}:{server.port}/v2/templates", data=json.dumps(defaults), auth=(server.user, server.password))
     req.raise_for_status()
